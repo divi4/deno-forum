@@ -1,0 +1,41 @@
+services:
+  pgadmin_service:
+    image: dpage/pgadmin4:9.14.0
+    restart: unless-stopped
+    container_name: my-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: itech3108@mail.com
+      PGADMIN_DEFAULT_PASSWORD: itech3108pass
+    ports:
+      - "5050:80"
+    networks:
+      - app-network
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin/data:Z
+
+  db:
+    image: library/postgres:18.3-alpine3.23
+    container_name: my-postgres
+    restart: unless-stopped
+    # set shared memory limit when using podman compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: itech3108pass
+      TZ: Australia/Melbourne
+    ports:
+      - "7000:5432"
+    networks: 
+      - app-network 
+
+networks:
+  app-network:
+    name: app-network
+    driver: bridge
+
+volumes:
+  postgres-data: {}
+  pgadmin-data: {}
