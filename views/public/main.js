@@ -14,38 +14,60 @@ document
       password: document.getElementById("signPassword").value,
     };
 
-    if (!(await checkLogin(data))) {
-      confirm("No user found, create user?") ? createUser(data) : false;
+    const statusCode = await checkLogin(data);
+    switch (statusCode) {
+      case 404:
+        confirm("No user found, create user?") ? createUser(data) : false;
+        break;
+      case 200:
+        console.log("Your in!");
+        break;
+      case 401:
+        console.log("Wrong password, please try again");
+        break;
+      default:
+        console.log(
+          "Something unexpected happened. Please clear cache and try again",
+        );
     }
   });
 
 async function checkLogin(data) {
   const url = "/api/login";
 
-  return await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((responseData) => responseData.success)
-    .catch((error) => console.log(error));
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    // const responseData = await response.json();
+    return response.status;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }
 
 async function createUser(data) {
   const url = "/api/signup";
 
-  return await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    // In what cases would this return false? Need to be handled?
-    .then((responseData) => console.log(responseData))
-    .catch((error) => console.log(error));
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+    return responseData;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 }
