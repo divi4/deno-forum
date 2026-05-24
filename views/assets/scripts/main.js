@@ -1,21 +1,53 @@
-import { User } from "./User.js";
+// Use Oak for route handling and auth middleware
+// Create a client side user object
+// Verify this user
+// If verified then get user details
+// If not, add new user to db upon client confirmation, then reload page to force login
+import { service } from "/views/assets/scripts/service.js";
+import { viewHandler } from "/views/assets/scripts/viewHandler.js";
 
-document.getElementById("loginForm").addEventListener("submit", function (ev) {
+// Main
+window.addEventListener("DOMContentLoaded", async (ev) => {
   ev.preventDefault();
 
-  fetch(
-    `http://localhost:7777/api/users/${document.getElementById("formUsername").value}`,
-  )
-    .then((response) =>
-      response
-        .json()
-        .then((jsonData) => ({ status: response.status, body: jsonData })),
-    )
-    .then((data) => {
-      let loginUser = new User(data.body.username, data.body.name);
-      loginUser.handleResponse(data.status);
-
-      localStorage.setItem("username", data.body.username);
-    })
-    .catch((error) => console.log(error));
+  signFormListener();
+  addPostFormBtnListener();
 });
+
+function signFormListener() {
+  document
+    .getElementById("signForm")
+    .addEventListener("submit", async function (ev) {
+      ev.preventDefault();
+
+      const data = {
+        username: document.getElementById("signUsername").value,
+        password: document.getElementById("signPassword").value,
+      };
+
+      const statusCode = await service.checkLogin(data);
+      switch (statusCode) {
+        case 404:
+          confirm("No user found, create user?") ? createUser(data) : false;
+          break;
+        case 200:
+          viewHandler.displayUsername(data.username);
+          break;
+        case 401:
+          console.log("Wrong password, please try again");
+          break;
+        default:
+          console.log(
+            "Something unexpected happened. Please clear cache and try again",
+          );
+      }
+    });
+}
+
+function addPostFormBtnListener() {
+  document.querySelector(".createPost").addEventListener("click", (ev) => {
+    ev.preventDefault();
+
+    viewHandler.showPostForm();
+  });
+}

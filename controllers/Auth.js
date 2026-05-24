@@ -15,7 +15,7 @@ Auth.checkUser = async (context) => {
     const results = await database.queryObject`
       SELECT username, password_hash
       FROM users
-      WHERE username = ${fromClient.username};`;
+      WHERE username = ${fromClient.username}`;
 
     const user = results.rows[0];
 
@@ -49,8 +49,6 @@ Auth.checkUser = async (context) => {
         message: "Bad password",
       };
 
-      console.log("Bad password!");
-
       return;
     }
   } catch (exception) {
@@ -61,8 +59,6 @@ Auth.checkUser = async (context) => {
       message: "Database query failed",
       error: exception.message,
     };
-
-    console.log("Database query failed!");
 
     return;
   }
@@ -80,18 +76,13 @@ Auth.addUser = async (context) => {
     const hashedPassword = await hash(fromClient.password);
 
     // Send a query to add user
-    await database.queryObject`
+    const results = await database.queryObject`
         INSERT INTO users (username, password_hash)
         VALUES (${fromClient.username}, ${hashedPassword})
+        RETURNING *
       `;
 
     // Check user was added
-    const results = await database.queryObject`
-        SELECT username
-        FROM users
-        WHERE username = ${fromClient.username}
-      `;
-
     if (results.rows.length) {
       context.response.status = 201;
       context.response.body = {
@@ -99,7 +90,6 @@ Auth.addUser = async (context) => {
         message: "User added to database",
       };
 
-      console.log("User added");
       return;
     } else {
       context.response.status = 500;
@@ -108,7 +98,6 @@ Auth.addUser = async (context) => {
         message: "Error adding user to database",
       };
 
-      console.log("Error adding user");
       return;
     }
   } catch (exception) {
@@ -120,7 +109,6 @@ Auth.addUser = async (context) => {
       error: exception.message,
     };
 
-    console.log("Signup query failed");
     return;
   }
 };
