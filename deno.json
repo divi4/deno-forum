@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "@felix/bcrypt": "jsr:@felix/bcrypt@^1.0.8"
+  }
+}

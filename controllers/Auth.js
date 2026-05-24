@@ -1,4 +1,4 @@
-import { hash, verify } from "@stdext/crypto/hash";
+import { hash, verify } from "jsr:@felix/bcrypt";
 import { database } from "../models/database.js";
 
 let Auth = {};
@@ -31,11 +31,7 @@ Auth.checkUser = async (context) => {
     }
 
     // Check password
-    const match = await verify(
-      "bcrypt",
-      fromClient.password,
-      user.password_hash,
-    );
+    const match = await verify(fromClient.password, user.password_hash);
 
     if (match) {
       context.response.status = 200;
@@ -81,7 +77,7 @@ Auth.addUser = async (context) => {
     await database.connect();
 
     // Hash the password
-    const hashedPassword = hash("bcrypt", fromClient.password);
+    const hashedPassword = await hash(fromClient.password);
 
     // Send a query to add user
     await database.queryObject`

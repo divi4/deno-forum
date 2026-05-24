@@ -3,6 +3,8 @@
   "specifiers": {
     "jsr:@db/postgres@*": "0.19.5",
     "jsr:@db/postgres@~0.19.5": "0.19.5",
+    "jsr:@denosaurs/plug@^1.1.0": "1.1.0",
+    "jsr:@felix/bcrypt@*": "1.0.8",
     "jsr:@oak/commons@1": "1.0.1",
     "jsr:@oak/oak@*": "17.2.0",
     "jsr:@oak/oak@^17.2.0": "17.2.0",
@@ -14,12 +16,15 @@
     "jsr:@std/encoding@1": "1.0.10",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
     "jsr:@std/encoding@^1.0.9": "1.0.10",
+    "jsr:@std/fmt@1": "1.0.9",
     "jsr:@std/fmt@^1.0.6": "1.0.9",
+    "jsr:@std/fs@1": "1.0.23",
     "jsr:@std/http@1": "1.0.25",
     "jsr:@std/internal@^1.0.12": "1.0.12",
     "jsr:@std/media-types@1": "1.1.0",
     "jsr:@std/path@1": "1.1.4",
     "jsr:@std/path@^1.0.8": "1.1.4",
+    "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@stdext/crypto@0.1": "0.1.0",
     "npm:path-to-regexp@^6.3.0": "6.3.0"
   },
@@ -30,8 +35,23 @@
         "jsr:@std/bytes@^1.0.5",
         "jsr:@std/crypto@^1.0.4",
         "jsr:@std/encoding@^1.0.9",
-        "jsr:@std/fmt",
+        "jsr:@std/fmt@^1.0.6",
         "jsr:@std/path@^1.0.8"
+      ]
+    },
+    "@denosaurs/plug@1.1.0": {
+      "integrity": "eb2f0b7546c7bca2000d8b0282c54d50d91cf6d75cb26a80df25a6de8c4bc044",
+      "dependencies": [
+        "jsr:@std/encoding@1",
+        "jsr:@std/fmt@1",
+        "jsr:@std/fs",
+        "jsr:@std/path@1"
+      ]
+    },
+    "@felix/bcrypt@1.0.8": {
+      "integrity": "59c41160fc027882479c512db5d53792c4d91aadcd49467c85caa2f1679046f2",
+      "dependencies": [
+        "jsr:@denosaurs/plug"
       ]
     },
     "@oak/commons@1.0.1": {
@@ -71,6 +91,13 @@
     },
     "@std/fmt@1.0.9": {
       "integrity": "2487343e8899fb2be5d0e3d35013e54477ada198854e52dd05ed0422eddcabe0"
+    },
+    "@std/fs@1.0.23": {
+      "integrity": "3ecbae4ce4fee03b180fa710caff36bb5adb66631c46a6460aaad49515565a37",
+      "dependencies": [
+        "jsr:@std/internal",
+        "jsr:@std/path@^1.1.4"
+      ]
     },
     "@std/http@1.0.25": {
       "integrity": "577b4252290af1097132812b339fffdd55fb0f4aeb98ff11bdbf67998aa17193",
