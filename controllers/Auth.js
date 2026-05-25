@@ -125,7 +125,10 @@ Auth.addUser = async (context) => {
 };
 
 Auth.checkToken = async (context, next) => {
-  if (!context.request.headers.has("Authorization")) {
+  if (
+    !context.request.headers.has("Authorization") ||
+    context.request.headers.get("Authorization") === "Bearer undefined"
+  ) {
     context.response.body = `No Authorization header in the request!`;
     context.response.status = 401;
     return;

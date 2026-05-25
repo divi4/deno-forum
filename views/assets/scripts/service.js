@@ -30,15 +30,14 @@ service.createUser = async (data) => {
   endpoint = "/api/signup";
 
   try {
-    const response = await fetch(endpoint, {
+    await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    const responseData = await response.json();
-    console.log(responseData);
+    // const responseData = await response.json();
     return responseData;
   } catch (error) {
     console.log(error);
@@ -50,7 +49,7 @@ service.postPost = async (data) => {
   const endpoint = "/api/post/create";
 
   try {
-    const response = await fetch(endpoint, {
+    await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -59,8 +58,7 @@ service.postPost = async (data) => {
       body: JSON.stringify(data),
     });
 
-    const responseData = await response.json();
-    console.log(responseData);
+    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;
@@ -88,7 +86,7 @@ service.createData = async (endpoint, data) => {
 
 service.postData = async (endpoint, data) => {
   try {
-    const response = await fetch(endpoint, {
+    await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -96,8 +94,7 @@ service.postData = async (endpoint, data) => {
       body: JSON.stringify(data),
     });
 
-    const responseData = await response.json();
-    console.log(responseData);
+    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;
