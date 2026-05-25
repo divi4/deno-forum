@@ -1,5 +1,7 @@
 import { hash, verify } from "jsr:@felix/bcrypt";
 import { database } from "../models/database.js";
+import * as djwt from "jsr:@zaubrik/djwt";
+import { config } from "../models/config.js";
 
 let Auth = {};
 
@@ -37,11 +39,20 @@ Auth.checkUser = async (context) => {
       context.response.status = 200;
       context.response.body = {
         success: true,
-        username: user.username,
       };
 
+      const jwt = await djwt.create(
+        { alg: config.jwtAlgorithm, typ: "JWT" },
+        {
+          exp: djwt.getNumericDate(10800),
+          username: user.username,
+        },
+        config.secretKey,
+      );
+
+      context.response.body = { token: jwt };
+
       return;
-      // await context.state.session.set("username", user.username);
     } else {
       context.response.status = 401;
       context.response.body = {
@@ -110,6 +121,32 @@ Auth.addUser = async (context) => {
     };
 
     return;
+  }
+};
+
+Auth.checkToken = async (context, next) => {
+  if (!context.request.headers.has("Authorization")) {
+    context.response.body = `No Authorization header in the request!`;
+    context.response.status = 401;
+    return;
+  }
+
+  const authHeader = context.request.headers.get("Authorization");
+  const [type, token] = authHeader.split(" ");
+
+  try {
+    const payload = await djwt.verify(
+      token,
+      config.secretKey,
+      config.jwtAlgorithm,
+    );
+
+    context.state.user = payload.username;
+    context.state.tokenPayload = payload;
+
+    await next();
+  } catch (ex) {
+    context.response.body = `There was an error verifying your JWT token: ${ex.message}`;
   }
 };
 

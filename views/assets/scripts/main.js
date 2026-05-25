@@ -28,7 +28,9 @@ function signFormListener() {
       const statusCode = await service.checkLogin(data);
       switch (statusCode) {
         case 404:
-          confirm("No user found, create user?") ? createUser(data) : false;
+          confirm("No user found, create user?")
+            ? service.createUser(data)
+            : false;
           break;
         case 200:
           viewHandler.displayUsername(data.username);

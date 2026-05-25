@@ -12,6 +12,13 @@ service.checkLogin = async (data) => {
       body: JSON.stringify(data),
     });
 
+    const responseData = await response.json();
+
+    if (response.ok) {
+      const token = responseData.token;
+
+      window.authToken = token;
+    }
     return response.status;
   } catch (error) {
     console.log(error);
@@ -47,6 +54,7 @@ service.postPost = async (data) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
       },
       body: JSON.stringify(data),
     });

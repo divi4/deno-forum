@@ -13,6 +13,7 @@
     "jsr:@std/bytes@^1.0.5": "1.0.6",
     "jsr:@std/crypto@1": "1.1.0",
     "jsr:@std/crypto@^1.0.4": "1.1.0",
+    "jsr:@std/encoding@0.224.0": "0.224.0",
     "jsr:@std/encoding@1": "1.0.10",
     "jsr:@std/encoding@^1.0.10": "1.0.10",
     "jsr:@std/encoding@^1.0.9": "1.0.10",
@@ -26,6 +27,7 @@
     "jsr:@std/path@^1.0.8": "1.1.4",
     "jsr:@std/path@^1.1.4": "1.1.4",
     "jsr:@stdext/crypto@0.1": "0.1.0",
+    "jsr:@zaubrik/djwt@*": "3.0.2",
     "npm:path-to-regexp@^6.3.0": "6.3.0"
   },
   "jsr": {
@@ -86,6 +88,9 @@
     "@std/crypto@1.1.0": {
       "integrity": "b8d6d0a6377a32b213af2661ed7bf1062d94feac0c57def5526a8e74a95c3ec8"
     },
+    "@std/encoding@0.224.0": {
+      "integrity": "efb6dca97d3e9c31392bd5c8cfd9f9fc9decf5a1f4d1f78af7900a493bcf89b5"
+    },
     "@std/encoding@1.0.10": {
       "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
     },
@@ -121,6 +126,12 @@
       "integrity": "05dc9e754c2529574d8bf98bd40c7dc468a02dcb2fa5e8644fff6813ceab66a4",
       "dependencies": [
         "jsr:@std/encoding@1"
+      ]
+    },
+    "@zaubrik/djwt@3.0.2": {
+      "integrity": "8070adaa49cd9e5d2b8ae82fd461132c966ef2f8ff8378db4a4da8df4f17c664",
+      "dependencies": [
+        "jsr:@std/encoding@0.224.0"
       ]
     }
   },
