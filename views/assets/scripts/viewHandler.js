@@ -44,6 +44,8 @@ viewHandler.showPostForm = () => {
     };
 
     form.reset();
+    document.querySelector(".posts").replaceChildren();
+    // postPost will call getPost for us, should reorganise
     service.postPost(data);
   });
 
@@ -51,6 +53,7 @@ viewHandler.showPostForm = () => {
     ev.preventDefault();
 
     document.querySelector(".posts").replaceChildren();
+    service.getPosts();
   });
 };
 
@@ -76,4 +79,32 @@ viewHandler.displayNewPostBtn = () => {
 
   service.addPostFormBtnListener();
 };
+
+viewHandler.showPosts = (data) => {
+  const posts = document.querySelector(".posts");
+
+  data.posts.forEach((el) => {
+    posts.append(
+      createElement("div", { className: "post" }, [
+        createElement("div", { className: "poster" }, [
+          createElement("p", { textContent: el.owner_username }),
+        ]),
+        createElement("div", { className: "info" }, [
+          createElement("p", { textContent: el.title }),
+          createElement("a", {
+            textContent: el.description,
+            href: el.link,
+          }),
+        ]),
+      ]),
+    );
+  });
+};
+
+function createElement(tag, props = {}, children = []) {
+  const element = document.createElement(tag);
+  Object.assign(element, props);
+  children.forEach((child) => element.append(child));
+  return element;
+}
 export { viewHandler };

@@ -11,6 +11,7 @@ window.addEventListener("DOMContentLoaded", async (ev) => {
   ev.preventDefault();
 
   signFormListener();
+  service.getPost();
 });
 
 function signFormListener() {

@@ -74,3 +74,25 @@ label {
     justify-content: center;
     gap: 1rem;
 }
+.post {
+    display: flex;
+    justify-content: space-evenly;
+    margin: 1rem 0;
+    background-color: papayawhip;
+    border-radius: 0.5rem;
+}
+.poster {
+    text-decoration: underline;
+    padding: 0 2rem;
+    background-color: peachpuff;
+}
+.info p {
+    font-weight: 600;
+    margin: 0;
+}
+.info {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+    margin: 1rem;
+}

@@ -60,7 +60,23 @@ service.postPost = async (data) => {
       body: JSON.stringify(data),
     });
 
+    service.getPosts();
     // const responseData = await response.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+service.getPosts = async () => {
+  const endpoint = "/api/post/read";
+
+  try {
+    const response = await fetch(endpoint);
+
+    const responseData = await response.json();
+
+    viewHandler.showPosts(responseData);
   } catch (error) {
     console.log(error);
     return error;
@@ -73,6 +89,7 @@ service.addPostFormBtnListener = () => {
     viewHandler.showPostForm();
   });
 };
+
 // Generic CRUD operations
 service.createData = async (endpoint, data) => {
   try {

@@ -8,6 +8,7 @@ const router = new Router();
 router.post("/api/login", Auth.checkUser);
 router.post("/api/signup", Auth.addUser);
 
+router.get("/api/post/read", Post.read);
 router.post("/api/post/create", Auth.checkToken, Post.create);
 
 app.use(router.routes());

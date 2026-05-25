@@ -10,7 +10,6 @@ Post.create = async (context) => {
 
     await database.connect();
 
-    // TODO get username from session
     let results = await database.queryObject`
         INSERT INTO posts (owner_username, title, link, description)
         VALUES (${context.state.user}, ${fromClient.title}, ${fromClient.link}, ${fromClient.description})
@@ -45,6 +44,40 @@ Post.create = async (context) => {
   }
 };
 
+Post.read = async (context) => {
+  context.response.headers.set("Content-Type", "application/json");
+  try {
+    await database.connect();
+
+    let results = await database.queryObject`SELECT * FROM POSTS`;
+
+    if (results.rows.length) {
+      context.response.status = 201;
+      context.response.body = {
+        message: "Posts fetched from database",
+        posts: results.rows,
+      };
+
+      return;
+    } else {
+      context.response.status = 500;
+      context.response.body = {
+        message: "Error getting posts form database",
+      };
+
+      return;
+    }
+  } catch (exception) {
+    console.error("Get post error:", exception);
+    context.response.status = 500;
+    context.response.body = {
+      message: "Database query failed",
+      error: exception.message,
+    };
+
+    return;
+  }
+};
 // read() {}
 
 // update() {}
