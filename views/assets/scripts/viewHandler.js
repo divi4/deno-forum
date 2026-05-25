@@ -43,6 +43,7 @@ viewHandler.showPostForm = () => {
       ratings: 0,
     };
 
+    form.reset();
     service.postPost(data);
   });
 
@@ -64,4 +65,15 @@ viewHandler.displayUsername = (username) => {
   logonUser.append(p);
 };
 
+viewHandler.displayNewPostBtn = () => {
+  const heading = document.querySelector(".heading");
+  const btn = document.createElement("button");
+
+  btn.classList.add("createPost");
+  btn.textContent = "New Post";
+
+  heading.append(btn);
+
+  service.addPostFormBtnListener();
+};
 export { viewHandler };

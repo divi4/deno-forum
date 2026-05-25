@@ -1,3 +1,5 @@
+import { viewHandler } from "/views/assets/scripts/viewHandler.js";
+
 let service = {};
 
 service.checkLogin = async (data) => {
@@ -65,6 +67,12 @@ service.postPost = async (data) => {
   }
 };
 
+service.addPostFormBtnListener = () => {
+  document.querySelector(".createPost").addEventListener("click", (ev) => {
+    ev.preventDefault();
+    viewHandler.showPostForm();
+  });
+};
 // Generic CRUD operations
 service.createData = async (endpoint, data) => {
   try {

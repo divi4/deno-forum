@@ -11,7 +11,6 @@ window.addEventListener("DOMContentLoaded", async (ev) => {
   ev.preventDefault();
 
   signFormListener();
-  addPostFormBtnListener();
 });
 
 function signFormListener() {
@@ -34,6 +33,7 @@ function signFormListener() {
           break;
         case 200:
           viewHandler.displayUsername(data.username);
+          viewHandler.displayNewPostBtn();
           break;
         case 401:
           console.log("Wrong password, please try again");
@@ -44,12 +44,4 @@ function signFormListener() {
           );
       }
     });
-}
-
-function addPostFormBtnListener() {
-  document.querySelector(".createPost").addEventListener("click", (ev) => {
-    ev.preventDefault();
-
-    viewHandler.showPostForm();
-  });
 }
