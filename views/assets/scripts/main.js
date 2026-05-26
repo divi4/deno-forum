@@ -11,7 +11,7 @@ window.addEventListener("DOMContentLoaded", async (ev) => {
   ev.preventDefault();
 
   signFormListener();
-  service.getPost();
+  service.getPosts();
 });
 
 function signFormListener() {
@@ -35,6 +35,7 @@ function signFormListener() {
         case 200:
           viewHandler.displayUsername(data.username);
           viewHandler.displayNewPostBtn();
+          service.getPosts();
           break;
         case 401:
           console.log("Wrong password, please try again");

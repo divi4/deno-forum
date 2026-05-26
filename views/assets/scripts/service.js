@@ -83,11 +83,48 @@ service.getPosts = async () => {
   }
 };
 
+service.getSessionUser = async () => {
+  try {
+    if (window.authToken) {
+      const response = await fetch("/api/whoami", {
+        headers: { Authorization: `Bearer ${window.authToken}` },
+      });
+      if (response.ok) {
+        const { username: sessionUser } = await response.json();
+        return sessionUser;
+      }
+    }
+  } catch (ex) {
+    console.log(
+      `There was an error verifying your JWT token when executing getSessionUser: ${ex.message}`,
+    );
+  }
+};
+
 service.addPostFormBtnListener = () => {
   document.querySelector(".createPost").addEventListener("click", (ev) => {
     ev.preventDefault();
     viewHandler.showPostForm();
   });
+};
+
+service.deletePost = async (id) => {
+  const endpoint = `api/post/delete/${id}`;
+  try {
+    await fetch(endpoint, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
+
+    service.getPosts();
+    // const responseData = await response.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 
 // Generic CRUD operations

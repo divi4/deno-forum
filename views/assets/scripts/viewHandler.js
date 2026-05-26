@@ -80,10 +80,19 @@ viewHandler.displayNewPostBtn = () => {
   service.addPostFormBtnListener();
 };
 
-viewHandler.showPosts = (data) => {
+viewHandler.showPosts = async (data) => {
   const posts = document.querySelector(".posts");
 
+  // Clear screen of old posts
+  document
+    .querySelectorAll(".posts div")
+    .forEach((oldPost) => oldPost.remove());
+
+  const sessionUser = await service.getSessionUser();
+
+  // Build posts dynamically
   data.posts.forEach((el) => {
+    const showDeleteBtn = el.owner_username === sessionUser;
     posts.append(
       createElement("div", { className: "post" }, [
         createElement("div", { className: "poster" }, [
@@ -95,6 +104,23 @@ viewHandler.showPosts = (data) => {
             textContent: el.description,
             href: el.link,
           }),
+        ]),
+        createElement("div", { className: "misc" }, [
+          createElement("p", {
+            textContent: `Posted: ${el.created_at}`,
+          }),
+          showDeleteBtn
+            ? createElement(
+                "btn",
+                {
+                  className: "delBtn",
+                  textContent: "delete",
+                  // Pass id as param rather than set as a key-* attribute, to prevent client tampering
+                  onclick: () => service.deletePost(el.id),
+                },
+                [],
+              )
+            : "",
         ]),
       ]),
     );

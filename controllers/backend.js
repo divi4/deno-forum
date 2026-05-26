@@ -10,6 +10,13 @@ router.post("/api/signup", Auth.addUser);
 
 router.get("/api/post/read", Post.read);
 router.post("/api/post/create", Auth.checkToken, Post.create);
+router.delete("/api/post/delete/:id", Auth.checkToken, Post.delete);
+
+router.get("/api/whoami", Auth.checkToken, async (context) => {
+  context.response.body = {
+    username: context.state.user,
+  };
+});
 
 app.use(router.routes());
 app.use(router.allowedMethods());

@@ -125,12 +125,7 @@ Auth.addUser = async (context) => {
 };
 
 Auth.checkToken = async (context, next) => {
-  if (
-    !context.request.headers.has("Authorization") ||
-    context.request.headers.get("Authorization") === "Bearer undefined"
-  ) {
-    context.response.body = `No Authorization header in the request!`;
-    context.response.status = 401;
+  if (Auth.isNotMember(context)) {
     return;
   }
 
@@ -146,10 +141,23 @@ Auth.checkToken = async (context, next) => {
 
     context.state.user = payload.username;
     context.state.tokenPayload = payload;
+    context.response.status = 201;
 
     await next();
   } catch (ex) {
     context.response.body = `There was an error verifying your JWT token: ${ex.message}`;
+    context.response.status = 500;
+  }
+};
+
+Auth.isNotMember = (context) => {
+  if (
+    !context.request.headers.has("Authorization") ||
+    context.request.headers.get("Authorization") === "Bearer undefined"
+  ) {
+    context.response.body = `No Authorization header in the request!`;
+    context.response.status = 401;
+    return;
   }
 };
 

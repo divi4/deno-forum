@@ -81,9 +81,18 @@ label {
     background-color: papayawhip;
     border-radius: 0.5rem;
 }
+.poster,
+.info,
+.misc {
+    display: flex;
+    justify-content: center;
+    margin: 0 2rem;
+}
 .poster {
+    align-items: center;
     text-decoration: underline;
     padding: 0 2rem;
+    margin: 0;
     background-color: peachpuff;
 }
 .info p {
@@ -91,8 +100,14 @@ label {
     margin: 0;
 }
 .info {
-    display: flex;
     flex-direction: column;
     flex: 2;
     margin: 1rem;
+}
+.misc {
+    flex-direction: column;
+    align-items: end;
+}
+.delBtn {
+    margin-bottom: 2rem;
 }

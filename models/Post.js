@@ -36,7 +36,7 @@ Post.create = async (context) => {
     console.error("Add post error:", exception);
     context.response.status = 500;
     context.response.body = {
-      message: "Database query failed",
+      message: "Create post query failed",
       error: exception.message,
     };
 
@@ -49,7 +49,8 @@ Post.read = async (context) => {
   try {
     await database.connect();
 
-    let results = await database.queryObject`SELECT * FROM POSTS`;
+    let results =
+      await database.queryObject`SELECT * FROM POSTS ORDER BY created_at DESC`;
 
     if (results.rows.length) {
       context.response.status = 201;
@@ -62,7 +63,7 @@ Post.read = async (context) => {
     } else {
       context.response.status = 500;
       context.response.body = {
-        message: "Error getting posts form database",
+        message: "Error getting posts from database",
       };
 
       return;
@@ -71,17 +72,53 @@ Post.read = async (context) => {
     console.error("Get post error:", exception);
     context.response.status = 500;
     context.response.body = {
-      message: "Database query failed",
+      message: "Get post query failed",
       error: exception.message,
     };
 
     return;
   }
 };
-// read() {}
 
-// update() {}
+Post.delete = async (context) => {
+  context.response.headers.set("Content-Type", "application/json");
+  try {
+    await database.connect();
 
-// delete() {}
+    const sessionUser = context.state.user;
+    const postId = context.params.id;
+
+    console.log(`sessionUser: ${sessionUser}, postId: ${postId}`);
+
+    let results =
+      await database.queryObject`DELETE FROM POSTS WHERE OWNER_USERNAME=${sessionUser} AND ID=${postId} RETURNING *`;
+
+    if (results.rows.length) {
+      context.response.status = 201;
+      context.response.body = {
+        message: "Post deleted from database",
+        posts: results.rows,
+      };
+
+      return;
+    } else {
+      context.response.status = 404;
+      context.response.body = {
+        message: "Error, post not found in database, can't delete",
+      };
+
+      return;
+    }
+  } catch (exception) {
+    console.error("Delete post error:", exception);
+    context.response.status = 500;
+    context.response.body = {
+      message: "Post delete query failed",
+      error: exception.message,
+    };
+
+    return;
+  }
+};
 
 export { Post };
