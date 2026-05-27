@@ -89,7 +89,6 @@ viewHandler.showPosts = async (data) => {
     .forEach((oldPost) => oldPost.remove());
 
   const sessionUser = await service.getSessionUser();
-  console.log(data.posts);
   // Build posts dynamically
   data.posts.forEach((el) => {
     const showDeleteBtn = el.owner_username === sessionUser;
@@ -113,21 +112,26 @@ viewHandler.showPosts = async (data) => {
           }),
         ]),
         createElement("div", { className: "misc" }, [
-          createElement("p", {
-            textContent: `Posted: ${el.created_at}`,
-          }),
-          showDeleteBtn
-            ? createElement(
-                "btn",
-                {
-                  className: "delBtn",
-                  textContent: "delete",
-                  // Pass id as param rather than set as a key-* attribute, to prevent client tampering
-                  onclick: () => service.deletePost(el.id),
-                },
-                [],
-              )
-            : "",
+          createElement("div", { className: "dateTime" }, [
+            createElement("p", {
+              textContent: `Posted: ${parseDateTime(el.created_at).date}`,
+            }),
+            createElement("p", {
+              textContent: `${parseDateTime(el.created_at).time}`,
+            }),
+            showDeleteBtn
+              ? createElement(
+                  "btn",
+                  {
+                    className: "delBtn",
+                    textContent: "delete",
+                    // Pass id as param rather than set as a key-* attribute, to prevent client tampering
+                    onclick: () => service.deletePost(el.id),
+                  },
+                  [],
+                )
+              : "",
+          ]),
         ]),
       ]),
     );
@@ -141,3 +145,12 @@ function createElement(tag, props = {}, children = []) {
   return element;
 }
 export { viewHandler };
+
+function parseDateTime(isoString) {
+  let ms = Date.parse(isoString);
+  const d = new Date(ms);
+  return {
+    date: d.toLocaleDateString(),
+    time: d.toLocaleTimeString(),
+  };
+}

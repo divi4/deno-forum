@@ -83,7 +83,8 @@ label {
 }
 .poster,
 .info,
-.misc {
+.misc,
+.dateTime {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -95,6 +96,7 @@ label {
     margin: 0;
     background-color: peachpuff;
 }
+.dateTime p,
 .poster p,
 .info p {
     margin: 0;
@@ -112,9 +114,13 @@ label {
     flex: 2;
     margin: 1rem;
 }
-.misc {
+.misc,
+.dateTime {
     align-items: end;
 }
+.misc {
+    margin: 2rem 0;
+}
 .delBtn {
-    margin-bottom: 2rem;
+    margin-top: 2rem;
 }
