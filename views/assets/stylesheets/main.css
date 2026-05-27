@@ -85,27 +85,34 @@ label {
 .info,
 .misc {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     margin: 0 2rem;
 }
 .poster {
     align-items: center;
-    text-decoration: underline;
     padding: 0 2rem;
     margin: 0;
     background-color: peachpuff;
 }
+.poster p,
 .info p {
-    font-weight: 600;
     margin: 0;
 }
+.poster p {
+    min-width: 10rem;
+}
+.post-username {
+    text-decoration: underline;
+}
+.info p {
+    font-weight: 600;
+}
 .info {
-    flex-direction: column;
     flex: 2;
     margin: 1rem;
 }
 .misc {
-    flex-direction: column;
     align-items: end;
 }
 .delBtn {

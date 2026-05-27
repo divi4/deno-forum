@@ -89,14 +89,21 @@ viewHandler.showPosts = async (data) => {
     .forEach((oldPost) => oldPost.remove());
 
   const sessionUser = await service.getSessionUser();
-
+  console.log(data.posts);
   // Build posts dynamically
   data.posts.forEach((el) => {
     const showDeleteBtn = el.owner_username === sessionUser;
     posts.append(
       createElement("div", { className: "post" }, [
         createElement("div", { className: "poster" }, [
-          createElement("p", { textContent: el.owner_username }),
+          createElement("p", {
+            className: "post-username",
+            textContent: el.owner_username,
+          }),
+          createElement("p", {
+            classname: "points",
+            textContent: `${el.creation_points}pts`,
+          }),
         ]),
         createElement("div", { className: "info" }, [
           createElement("p", { textContent: el.title }),

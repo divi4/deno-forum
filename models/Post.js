@@ -49,8 +49,17 @@ Post.read = async (context) => {
   try {
     await database.connect();
 
-    let results =
-      await database.queryObject`SELECT * FROM POSTS ORDER BY created_at DESC`;
+    let results = await database.queryObject`
+        SELECT
+        posts.*,
+        users.creation_points
+        FROM posts
+        INNER JOIN(
+        SELECT username, creation_points
+        FROM users
+        ) users
+        ON users.username = posts.owner_username
+        ORDER BY posts.created_at DESC`;
 
     if (results.rows.length) {
       context.response.status = 201;
