@@ -11,7 +11,9 @@ window.addEventListener("DOMContentLoaded", async (ev) => {
   ev.preventDefault();
 
   signFormListener();
-  service.getPosts();
+  // Would need to place this on a interval to keep public view up-to-date
+  // whenever members take actions
+  service.getPublicPosts();
 });
 
 function signFormListener() {

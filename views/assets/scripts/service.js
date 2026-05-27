@@ -68,12 +68,31 @@ service.postPost = async (data) => {
   }
 };
 
-service.getPosts = async () => {
-  const endpoint = "/api/post/read";
+service.getPublicPosts = async () => {
+  const endpoint = "/api/post/read/public";
 
   try {
     const response = await fetch(endpoint);
 
+    const responseData = await response.json();
+
+    viewHandler.showPosts(responseData);
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+service.getPosts = async () => {
+  const endpoint = "/api/post/read";
+
+  try {
+    const response = await fetch(endpoint, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
     const responseData = await response.json();
 
     viewHandler.showPosts(responseData);
@@ -113,6 +132,25 @@ service.deletePost = async (id) => {
   try {
     await fetch(endpoint, {
       method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
+
+    service.getPosts();
+    // const responseData = await response.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+service.hidePost = async (id) => {
+  const endpoint = `api/post/hide/${id}`;
+  try {
+    await fetch(endpoint, {
+      method: "",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${window.authToken}`,

@@ -8,9 +8,12 @@ const router = new Router();
 router.post("/api/login", Auth.checkUser);
 router.post("/api/signup", Auth.addUser);
 
-router.get("/api/post/read", Post.read);
+router.get("/api/post/read/public", Post.publicRead);
+router.get("/api/post/read", Auth.checkToken, Post.memberRead);
 router.post("/api/post/create", Auth.checkToken, Post.create);
 router.delete("/api/post/delete/:id", Auth.checkToken, Post.delete);
+router.post("/api/post/hide/:id", Auth.checkToken, Post.hide);
+// router.post("/api/post/rating/:bool", Auth.checkToken, Post.updateRating);
 
 router.get("/api/whoami", Auth.checkToken, async (context) => {
   context.response.body = {

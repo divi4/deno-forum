@@ -123,6 +123,17 @@ viewHandler.showPosts = async (data) => {
             createElement("p", {
               textContent: `${parseDateTime(el.created_at).time}`,
             }),
+          ]),
+          createElement("div", { className: "controls" }, [
+            createElement(
+              "btn",
+              {
+                className: "hideBtn",
+                textContent: "Hide post",
+                onclick: () => service.hidePost(el.id),
+              },
+              [],
+            ),
             showDeleteBtn
               ? createElement(
                   "btn",

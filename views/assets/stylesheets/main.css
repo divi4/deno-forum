@@ -59,6 +59,7 @@ label {
     padding: 1rem;
     border: #000 solid 2px;
 }
+.hideBtn,
 .delBtn {
     border: none;
     background-color: inherit;
@@ -91,11 +92,16 @@ label {
 .poster,
 .info,
 .misc,
-.dateTime {
+.dateTime,
+.controls {
     display: flex;
     flex-direction: column;
     justify-content: center;
     margin: 0 2rem;
+}
+.controls {
+    flex-direction: row;
+    justify-content: space-around;
 }
 .poster {
     align-items: center;
@@ -128,6 +134,6 @@ label {
 .misc {
     margin: 2rem 0;
 }
-.delBtn {
+.controls {
     margin-top: 2rem;
 }
