@@ -71,8 +71,15 @@ label {
 }
 .addPostForm {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     gap: 1rem;
+    flex-wrap: wrap;
+}
+.addPostForm div {
+    display: flex;
+    gap: 1rem;
+    align-self: center;
 }
 .post {
     display: flex;

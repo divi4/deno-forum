@@ -17,6 +17,8 @@ viewHandler.showPostForm = () => {
   link.placeholder = "Insert link";
   link.name = "link";
 
+  const div = document.createElement("div");
+
   const submit = document.createElement("input");
   submit.value = "Post";
   submit.type = "submit";
@@ -25,11 +27,13 @@ viewHandler.showPostForm = () => {
   cancel.value = "Cancel";
   cancel.type = "button";
 
+  div.append(submit);
+  div.append(cancel);
+
   form.append(title);
   form.append(description);
   form.append(link);
-  form.append(submit);
-  form.append(cancel);
+  form.append(div);
 
   document.querySelector(".posts").replaceChildren(form);
 
@@ -138,6 +142,7 @@ viewHandler.showPosts = async (data) => {
   });
 };
 
+// Helper functions
 function createElement(tag, props = {}, children = []) {
   const element = document.createElement(tag);
   Object.assign(element, props);
