@@ -340,4 +340,67 @@ Post.downvote = async (context) => {
   }
 };
 
+// Trigger on get post reload, as need to update all posts
+// owned by user with new score
+Post.updateAccountPoints = async (context) => {
+  context.response.headers.set("Content-Type", "application/json");
+  try {
+    await database.connect();
+
+    const postId = context.params.id;
+
+    // Need to identify username from the net_votes of a post
+    // Backtrack via ratings.post_id -> posts.id
+    // -> posts.owner_username -> user.username
+    // -> (user.creation_points + ratings.net_votes)
+    let results = await database.queryObject`
+        UPDATE users
+        SET creation_points=SUM(creation_points + ratings.net_votes)
+        FROM users
+        INNER JOIN(
+                SELECT id,
+                owner_username
+                FROM posts
+                ) posts
+                ON users.username=posts.ownerusername
+        LEFT JOIN (
+                post_id,
+                SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END)::NUMERIC as net_votes
+                GROUP BY post_id
+                FROM ratings
+                ) ratings
+                ON posts.id=ratings.post_id
+        WHERE posts.id=${postId}
+        RETURNING *
+        `;
+
+    if (results.rows.length) {
+      context.response.status = 201;
+      context.response.body = {
+        message: "Updated user's total points in database",
+        posts: results.rows,
+      };
+
+      return;
+    } else {
+      context.response.status = 404;
+      context.response.body = {
+        message:
+          "Error, query or parts of query not found, can't update user total points",
+      };
+
+      return;
+    }
+  } catch (exception) {
+    console.error("Update user score error:", exception);
+    context.response.status = 500;
+    context.response.body = {
+      message: "Update user score query failed",
+      error: exception.message,
+    };
+
+    return;
+  }
+};
+
 export { Post };
