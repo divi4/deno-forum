@@ -44,7 +44,6 @@ viewHandler.showPostForm = () => {
       title: title.value,
       link: link.value,
       description: description.value,
-      ratings: 0,
     };
 
     form.reset();
@@ -94,7 +93,8 @@ viewHandler.showPosts = async (data) => {
 
   const sessionUser = await service.getSessionUser();
   // Build posts dynamically
-  data.posts.forEach((el) => {
+  console.log(data.posts);
+  data.posts.forEach(async (el) => {
     const showDeleteBtn = el.owner_username === sessionUser;
     posts.append(
       createElement("div", { className: "post" }, [
@@ -148,6 +148,58 @@ viewHandler.showPosts = async (data) => {
               : "",
           ]),
         ]),
+        createElement(
+          "div",
+          {
+            className: "voteBtns",
+          },
+          [
+            createElement(
+              "btn",
+              {
+                className: "upvoteBtn",
+                onclick: () => service.upvote(el.id),
+              },
+              [
+                createElement(
+                  "img",
+                  {
+                    src: "/views/assets/imgs/upvoteTriangle.png",
+                    width: "51",
+                    height: "51",
+                  },
+                  [],
+                ),
+              ],
+            ),
+            createElement(
+              "p",
+              {
+                className: "postVotes",
+                textContent: `${el.net_votes} pts`,
+              },
+              [],
+            ),
+            createElement(
+              "btn",
+              {
+                className: "downvoteBtn",
+                onclick: () => service.downvote(el.id),
+              },
+              [
+                createElement(
+                  "img",
+                  {
+                    src: "/views/assets/imgs/downvoteTriangle.png",
+                    width: "51",
+                    height: "51",
+                  },
+                  [],
+                ),
+              ],
+            ),
+          ],
+        ),
       ]),
     );
   });

@@ -62,18 +62,36 @@ Post.publicRead = async (context) => {
             ORDER BY posts.created_at DESC
             `;
 
+    let votesResult = await database.queryObject`
+              SELECT
+                post_id,
+                COALESCE(SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END), 0)::NUMERIC as net_votes
+              FROM ratings
+              GROUP BY post_id
+              `;
+
+    const votesMap = new Map();
+    votesResult.rows.forEach((vote) => {
+      votesMap.set(vote.post_id, vote.net_votes);
+    });
+
+    const postsWithVotes = results.rows.map((post) => ({
+      ...post,
+      net_votes: votesMap.get(post.id) || 0,
+    }));
+
     if (results.rows.length) {
       context.response.status = 201;
       context.response.body = {
         message: "Posts fetched from database",
-        posts: results.rows,
+        posts: postsWithVotes,
       };
 
       return;
     } else {
-      context.response.status = 500;
+      context.response.status = 404;
       context.response.body = {
-        message: "Error getting posts from database",
+        message: "Error fetching posts from database",
       };
 
       return;
@@ -114,11 +132,29 @@ Post.memberRead = async (context) => {
             ORDER BY posts.created_at DESC
             `;
 
+    let votesResult = await database.queryObject`
+          SELECT
+            post_id,
+            COALESCE(SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END), 0)::NUMERIC as net_votes
+          FROM ratings
+          GROUP BY post_id
+          `;
+
+    const votesMap = new Map();
+    votesResult.rows.forEach((vote) => {
+      votesMap.set(vote.post_id, vote.net_votes);
+    });
+
+    const postsWithVotes = results.rows.map((post) => ({
+      ...post,
+      net_votes: votesMap.get(post.id) || 0,
+    }));
+
     if (results.rows.length) {
       context.response.status = 201;
       context.response.body = {
         message: "Posts fetched from database",
-        posts: results.rows,
+        posts: postsWithVotes,
       };
 
       return;
@@ -212,10 +248,102 @@ Post.hide = async (context) => {
       return;
     }
   } catch (exception) {
-    console.error("Delete post error:", exception);
+    console.error("Hide post error:", exception);
     context.response.status = 500;
     context.response.body = {
       message: "Post hide query failed",
+      error: exception.message,
+    };
+
+    return;
+  }
+};
+
+Post.upvote = async (context) => {
+  context.response.headers.set("Content-Type", "application/json");
+  try {
+    await database.connect();
+
+    const sessionUser = context.state.user;
+    const postId = context.params.id;
+
+    await database.queryObject`
+         DELETE FROM ratings WHERE rated_by_username=${sessionUser} AND post_id=${postId}
+         `;
+
+    let results = await database.queryObject`
+                INSERT INTO ratings (post_id, rated_by_username, is_like)
+                VALUES (${postId}, ${sessionUser}, 'true')
+                RETURNING *
+                `;
+
+    if (results.rows.length) {
+      context.response.status = 201;
+      context.response.body = {
+        message: "Upvote added to post ratings on database",
+        posts: results.rows,
+      };
+
+      return;
+    } else {
+      context.response.status = 404;
+      context.response.body = {
+        message: "Error, post rating not found in database, can't vote",
+      };
+
+      return;
+    }
+  } catch (exception) {
+    console.error("Vote post error:", exception);
+    context.response.status = 500;
+    context.response.body = {
+      message: "Post vote query failed",
+      error: exception.message,
+    };
+
+    return;
+  }
+};
+
+Post.downvote = async (context) => {
+  context.response.headers.set("Content-Type", "application/json");
+  try {
+    await database.connect();
+
+    const sessionUser = context.state.user;
+    const postId = context.params.id;
+
+    await database.queryObject`
+      DELETE FROM ratings WHERE rated_by_username=${sessionUser} AND post_id=${postId}
+      `;
+
+    let results = await database.queryObject`
+      INSERT INTO ratings (post_id, rated_by_username, is_like)
+                  VALUES (${postId}, ${sessionUser}, 'false')
+                  RETURNING *
+                  `;
+
+    if (results.rows.length) {
+      context.response.status = 201;
+      context.response.body = {
+        message: "Downvote added to post ratings on database",
+        posts: results.rows,
+      };
+
+      return;
+    } else {
+      context.response.status = 404;
+      context.response.body = {
+        message: "Error, post rating not found in database, can't vote",
+      };
+
+      return;
+    }
+  } catch (exception) {
+    console.error("Vote post error:", exception);
+    context.response.status = 500;
+    context.response.body = {
+      message: "Post vote query failed",
       error: exception.message,
     };
 

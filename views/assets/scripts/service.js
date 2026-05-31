@@ -73,7 +73,6 @@ service.getPublicPosts = async () => {
 
   try {
     const response = await fetch(endpoint);
-
     const responseData = await response.json();
 
     viewHandler.showPosts(responseData);
@@ -93,6 +92,8 @@ service.getPosts = async () => {
         Authorization: `Bearer ${window.authToken}`,
       },
     });
+
+    console.log(response);
     const responseData = await response.json();
 
     viewHandler.showPosts(responseData);
@@ -150,7 +151,7 @@ service.hidePost = async (id) => {
   const endpoint = `api/post/hide/${id}`;
   try {
     await fetch(endpoint, {
-      method: "",
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${window.authToken}`,
@@ -164,6 +165,58 @@ service.hidePost = async (id) => {
     return error;
   }
 };
+
+service.upvote = async (id) => {
+  const endpoint = `api/post/upvote/${id}`;
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
+
+    service.getPosts();
+    // const responseData = await response.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+service.downvote = async (id) => {
+  const endpoint = `api/post/downvote/${id}`;
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
+
+    service.getPosts();
+    // const responseData = await response.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+// service.getPostVotes = async (id) => {
+//   const endpoint = `/api/post/rating/read/${id}`;
+
+//   try {
+//     const response = await fetch(endpoint);
+//     const responseData = await response.json();
+
+//     return responseData.posts[0].net_votes;
+//   } catch (error) {
+//     console.log(error);
+//     return error;
+//   }
+// };
 
 // Generic CRUD operations
 service.createData = async (endpoint, data) => {

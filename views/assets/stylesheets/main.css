@@ -93,7 +93,8 @@ label {
 .info,
 .misc,
 .dateTime,
-.controls {
+.controls,
+.voteBtns {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -124,7 +125,7 @@ label {
     font-weight: 600;
 }
 .info {
-    flex: 2;
+    flex-grow: 2;
     margin: 1rem;
 }
 .misc,
@@ -136,4 +137,13 @@ label {
 }
 .controls {
     margin-top: 2rem;
+}
+.voteBtns btn {
+    display: flex;
+    padding: 0;
+}
+.postVotes {
+    display: flex;
+    justify-content: center;
+    margin: 0;
 }

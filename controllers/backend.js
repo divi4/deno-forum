@@ -13,7 +13,9 @@ router.get("/api/post/read", Auth.checkToken, Post.memberRead);
 router.post("/api/post/create", Auth.checkToken, Post.create);
 router.delete("/api/post/delete/:id", Auth.checkToken, Post.delete);
 router.post("/api/post/hide/:id", Auth.checkToken, Post.hide);
-// router.post("/api/post/rating/:bool", Auth.checkToken, Post.updateRating);
+router.post("/api/post/upvote/:id", Auth.checkToken, Post.upvote);
+router.post("/api/post/downvote/:id", Auth.checkToken, Post.downvote);
+// router.post("/api/post/rating/:id/:bool", Auth.checkToken, Post.updateRating);
 
 router.get("/api/whoami", Auth.checkToken, async (context) => {
   context.response.body = {
