@@ -52,39 +52,30 @@ Post.publicRead = async (context) => {
     let results = await database.queryObject`
             SELECT
               posts.*,
-              users.creation_points
+              users.creation_points,
+              ratings.net_votes::NUMERIC
             FROM posts
             INNER JOIN(
             SELECT username, creation_points
             FROM users
             ) users
             ON users.username = posts.owner_username
-            ORDER BY posts.created_at DESC
-            `;
-
-    let votesResult = await database.queryObject`
+            LEFT JOIN(
               SELECT
-                post_id,
-                COALESCE(SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END), 0)::NUMERIC as net_votes
+              post_id,
+              COALESCE(SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END), 0) as net_votes
               FROM ratings
               GROUP BY post_id
-              `;
-
-    const votesMap = new Map();
-    votesResult.rows.forEach((vote) => {
-      votesMap.set(vote.post_id, vote.net_votes);
-    });
-
-    const postsWithVotes = results.rows.map((post) => ({
-      ...post,
-      net_votes: votesMap.get(post.id) || 0,
-    }));
+            ) ratings
+            ON posts.id = ratings.post_id
+            ORDER BY posts.created_at DESC
+            `;
 
     if (results.rows.length) {
       context.response.status = 201;
       context.response.body = {
         message: "Posts fetched from database",
-        posts: postsWithVotes,
+        posts: results.rows,
       };
 
       return;
@@ -118,13 +109,22 @@ Post.memberRead = async (context) => {
     let results = await database.queryObject`
             SELECT
               posts.*,
-              users.creation_points
+              users.creation_points,
+              ratings.net_votes::NUMERIC
             FROM posts
             INNER JOIN(
             SELECT username, creation_points
             FROM users
             ) users
             ON users.username = posts.owner_username
+            LEFT JOIN(
+              SELECT
+                post_id,
+                SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END) as net_votes
+              FROM ratings
+              GROUP BY post_id
+            ) ratings
+            ON posts.id = ratings.post_id
             WHERE posts.id NOT IN (
               SELECT post_id FROM hidden_posts
               WHERE hidden_by_username = ${sessionUser}
@@ -132,29 +132,11 @@ Post.memberRead = async (context) => {
             ORDER BY posts.created_at DESC
             `;
 
-    let votesResult = await database.queryObject`
-          SELECT
-            post_id,
-            COALESCE(SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END), 0)::NUMERIC as net_votes
-          FROM ratings
-          GROUP BY post_id
-          `;
-
-    const votesMap = new Map();
-    votesResult.rows.forEach((vote) => {
-      votesMap.set(vote.post_id, vote.net_votes);
-    });
-
-    const postsWithVotes = results.rows.map((post) => ({
-      ...post,
-      net_votes: votesMap.get(post.id) || 0,
-    }));
-
     if (results.rows.length) {
       context.response.status = 201;
       context.response.body = {
         message: "Posts fetched from database",
-        posts: postsWithVotes,
+        posts: results.rows,
       };
 
       return;

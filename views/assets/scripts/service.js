@@ -93,7 +93,6 @@ service.getPosts = async () => {
       },
     });
 
-    console.log(response);
     const responseData = await response.json();
 
     viewHandler.showPosts(responseData);
