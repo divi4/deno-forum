@@ -10,11 +10,18 @@ Post.create = async (context) => {
 
     await database.connect();
 
+    const sessionUser = context.state.user;
+
     let results = await database.queryObject`
         INSERT INTO posts (owner_username, title, link, description)
-        VALUES (${context.state.user}, ${fromClient.title}, ${fromClient.link}, ${fromClient.description})
+        VALUES (${sessionUser}, ${fromClient.title}, ${fromClient.link}, ${fromClient.description})
         RETURNING *
         `;
+
+    await database.queryObject`
+      INSERT INTO ratings (post_id, rated_by_username, is_like)
+      VALUES (${results.rows[0].id}, ${sessionUser}, TRUE)
+      `;
 
     // Check post was added
     if (results.rows.length) {
@@ -63,7 +70,7 @@ Post.publicRead = async (context) => {
             LEFT JOIN(
               SELECT
               post_id,
-              COALESCE(SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END), 0) as net_votes
+              SUM(CASE WHEN is_like='t' THEN 1 ELSE -1 END) as net_votes
               FROM ratings
               GROUP BY post_id
             ) ratings
@@ -255,7 +262,7 @@ Post.upvote = async (context) => {
 
     let results = await database.queryObject`
                 INSERT INTO ratings (post_id, rated_by_username, is_like)
-                VALUES (${postId}, ${sessionUser}, 'true')
+                VALUES (${postId}, ${sessionUser}, TRUE)
                 RETURNING *
                 `;
 
@@ -301,7 +308,7 @@ Post.downvote = async (context) => {
 
     let results = await database.queryObject`
       INSERT INTO ratings (post_id, rated_by_username, is_like)
-                  VALUES (${postId}, ${sessionUser}, 'false')
+                  VALUES (${postId}, ${sessionUser}, FALSE)
                   RETURNING *
                   `;
 

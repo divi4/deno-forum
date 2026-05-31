@@ -93,7 +93,6 @@ viewHandler.showPosts = async (data) => {
 
   const sessionUser = await service.getSessionUser();
   // Build posts dynamically
-  console.log(data.posts);
   data.posts.forEach(async (el) => {
     const showDeleteBtn = el.owner_username === sessionUser;
     posts.append(

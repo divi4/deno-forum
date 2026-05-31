@@ -203,20 +203,6 @@ service.downvote = async (id) => {
   }
 };
 
-// service.getPostVotes = async (id) => {
-//   const endpoint = `/api/post/rating/read/${id}`;
-
-//   try {
-//     const response = await fetch(endpoint);
-//     const responseData = await response.json();
-
-//     return responseData.posts[0].net_votes;
-//   } catch (error) {
-//     console.log(error);
-//     return error;
-//   }
-// };
-
 // Generic CRUD operations
 service.createData = async (endpoint, data) => {
   try {
