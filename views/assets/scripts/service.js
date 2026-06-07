@@ -176,7 +176,7 @@ service.upvote = async (id) => {
       },
     });
 
-    service.getPosts();
+    service.updatePostPoints(id);
     // const responseData = await response.json();
   } catch (error) {
     console.log(error);
@@ -195,8 +195,46 @@ service.downvote = async (id) => {
       },
     });
 
-    service.getPosts();
+    service.updatePostPoints(id);
     // const responseData = await response.json();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+service.updatePostPoints = async (id) => {
+  const endpoint = `/api/post/rating/${id}`;
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
+
+    // const responseData = await response.json();
+    service.updateUserPoints(id);
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+};
+
+service.updateUserPoints = async (id) => {
+  const endpoint = `/api/user/rating/${id}`;
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
+
+    // const responseData = await response.json();
+    service.getPosts();
   } catch (error) {
     console.log(error);
     return error;

@@ -175,7 +175,7 @@ viewHandler.showPosts = async (data) => {
               "p",
               {
                 className: "postVotes",
-                textContent: `${el.net_votes} pts`,
+                textContent: `${el.post_rating} pts`,
               },
               [],
             ),
