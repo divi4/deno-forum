@@ -195,7 +195,7 @@ viewHandler.showPosts = async (data) => {
               "p",
               {
                 className: "postVotes",
-                textContent: `${el.post_rating} pts`,
+                textContent: `${el.post_rating || 1} pts`,
               },
               [],
             ),

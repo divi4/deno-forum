@@ -300,13 +300,23 @@ Post.upvote = async (context) => {
     const sessionUser = context.state.user;
     const postId = context.params.id;
 
-    await database.queryObject`
-      DELETE FROM ratings
+    let isExist = await database.queryObject`
+      SELECT FROM ratings
       WHERE
         rated_by_username=${sessionUser} AND
         post_id=${postId} AND
         is_like=FALSE
-      `;
+        `;
+
+    if (isExist.rows.length) {
+      await database.queryObject`
+           DELETE FROM ratings
+           WHERE
+             rated_by_username=${sessionUser} AND
+             post_id=${postId} AND
+             is_like=FALSE
+             `;
+    }
 
     let results = await database.queryObject`
         INSERT INTO ratings (post_id, rated_by_username, is_like)
@@ -334,7 +344,7 @@ Post.upvote = async (context) => {
     console.error("Vote post error:", exception);
     context.response.status = 500;
     context.response.body = {
-      message: "Post vote query failed",
+      message: "Post upvote query failed",
       error: exception.message,
     };
 
@@ -350,19 +360,29 @@ Post.downvote = async (context) => {
     const sessionUser = context.state.user;
     const postId = context.params.id;
 
-    await database.queryObject`
-      DELETE FROM ratings
+    let isExist = await database.queryObject`
+      SELECT FROM ratings
       WHERE
         rated_by_username=${sessionUser} AND
         post_id=${postId} AND
         is_like=TRUE
       `;
 
+    if (isExist.rows.length) {
+      await database.queryObject`
+            DELETE FROM ratings
+            WHERE
+              rated_by_username=${sessionUser} AND
+              post_id=${postId} AND
+              is_like=TRUE
+            `;
+    }
+
     let results = await database.queryObject`
-      INSERT INTO ratings (post_id, rated_by_username, is_like)
-        VALUES (${postId}, ${sessionUser}, FALSE)
-        RETURNING *
-      `;
+            INSERT INTO ratings (post_id, rated_by_username, is_like)
+              VALUES (${postId}, ${sessionUser}, FALSE)
+              RETURNING *
+            `;
 
     if (results.rows.length) {
       context.response.status = 201;
@@ -384,7 +404,7 @@ Post.downvote = async (context) => {
     console.error("Vote post error:", exception);
     context.response.status = 500;
     context.response.body = {
-      message: "Post vote query failed",
+      message: "Post downvote query failed",
       error: exception.message,
     };
 
@@ -417,6 +437,7 @@ Post.updatePostPoints = async (context) => {
       SET post_rating = p.post_rating + vc.net_votes
       FROM vote_calc vc
       WHERE p.id = ${postId}
+      RETURNING p.id, p.post_rating, p.owner_username
       `;
 
     if (results.rows.length) {
@@ -437,10 +458,10 @@ Post.updatePostPoints = async (context) => {
       return;
     }
   } catch (exception) {
-    console.error("Update user score error:", exception);
+    console.error("Update post score error:", exception);
     context.response.status = 500;
     context.response.body = {
-      message: "Update user score query failed",
+      message: "Update post score query failed",
       error: exception.message,
     };
 

@@ -135,8 +135,12 @@ label {
 .dateTime {
     align-items: end;
 }
+.dateTime p {
+    display: flex;
+    align-self: flex-start;
+}
 .misc {
-    margin: 2rem 0;
+    padding: 2rem;
 }
 .controls {
     margin-top: 2rem;
