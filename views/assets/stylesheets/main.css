@@ -44,6 +44,7 @@ label {
 .signBtn {
     background-color: #cd7f32;
     color: #fff;
+    cursor: pointer;
     border: 2px solid #b06500;
     border-radius: 4px;
     padding: 0.5rem 2rem;
@@ -54,10 +55,11 @@ label {
     justify-content: space-between;
     margin: 1rem 0;
 }
-.posts {
+.forum {
     background-color: #fff;
     padding: 1rem;
     border: #000 solid 2px;
+    filter: drop-shadow(0 3rem 3rem #333);
 }
 .hideBtn,
 .delBtn {
@@ -76,6 +78,7 @@ label {
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
+    cursor: pointer;
 }
 .addPostForm div {
     display: flex;
@@ -146,4 +149,31 @@ label {
     display: flex;
     justify-content: center;
     margin: 0;
+}
+#tabs {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 1rem;
+}
+#tabs button {
+    box-shadow:
+        rgba(14, 30, 37, 0.12) 0px 0.2rem 0.4rem 0px,
+        rgba(14, 30, 37, 0.32) 0px 0.2rem 1.6rem 0px;
+    border: 1px solid #ccc;
+    border-bottom: 0;
+    background-color: #ccc;
+    outline: none;
+    cursor: pointer;
+    padding: 1.4rem 1.6rem;
+    transition: 0.3s;
+    margin: 0 0.9rem;
+}
+#tabs button:hover {
+    background-color: palegoldenrod;
+}
+#tabs button.active {
+    background-color: pink;
+}
+.post:nth-child(1) {
+    margin-top: 0;
 }

@@ -95,6 +95,7 @@ service.getPosts = async () => {
 
     const responseData = await response.json();
 
+    viewHandler.resetFilters();
     viewHandler.showPosts(responseData);
   } catch (error) {
     console.log(error);
@@ -125,6 +126,31 @@ service.addPostFormBtnListener = () => {
     ev.preventDefault();
     viewHandler.showPostForm();
   });
+};
+
+service.favPostBtnListener = async () => {
+  let favBtn = document.querySelector(".favPost");
+  favBtn.classList.add("active");
+
+  let recentBtn = document.querySelector(".recentBtn");
+  recentBtn.classList.remove("active");
+
+  const endpoint = "/api/user/favourites";
+
+  try {
+    let response = await fetch(endpoint, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${window.authToken}`,
+      },
+    });
+
+    const responseData = await response.json();
+    viewHandler.showPosts(responseData);
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };
 
 service.deletePost = async (id) => {

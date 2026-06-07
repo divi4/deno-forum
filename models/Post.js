@@ -158,6 +158,59 @@ Post.memberRead = async (context) => {
   }
 };
 
+Post.getFavs = async (context) => {
+  context.response.headers.set("Content-Type", "application/json");
+  try {
+    await database.connect();
+
+    const sessionUser = context.state.user;
+
+    let results = await database.queryObject`
+            SELECT
+              posts.*,
+              users.creation_points
+            FROM posts
+            INNER JOIN(
+            SELECT username, creation_points
+            FROM users
+            ) users
+            ON users.username = posts.owner_username
+            WHERE posts.id IN (
+              SELECT post_id FROM ratings
+              WHERE rated_by_username = ${sessionUser}
+              AND is_like='t'
+              )
+            ORDER BY posts.created_at DESC
+            `;
+
+    if (results.rows.length) {
+      context.response.status = 201;
+      context.response.body = {
+        message: "Posts fetched from database",
+        posts: results.rows,
+      };
+
+      return;
+    } else {
+      context.response.status = 500;
+      context.response.body = {
+        message: "Error getting posts from database",
+      };
+
+      return;
+    }
+  } catch (exception) {
+    console.error("Get post error:", exception);
+    context.response.status = 500;
+    context.response.body = {
+      message: "Get post query failed",
+      error: exception.message,
+    };
+
+    return;
+  }
+};
+
 Post.delete = async (context) => {
   context.response.headers.set("Content-Type", "application/json");
   try {

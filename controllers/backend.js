@@ -17,6 +17,7 @@ router.post("/api/post/upvote/:id", Auth.checkToken, Post.upvote);
 router.post("/api/post/downvote/:id", Auth.checkToken, Post.downvote);
 router.post("/api/post/rating/:id", Auth.checkToken, Post.updatePostPoints);
 router.post("/api/user/rating/:id", Auth.checkToken, Post.updateAccountPoints);
+router.get("/api/user/favourites", Auth.checkToken, Post.getFavs);
 
 router.get("/api/whoami", Auth.checkToken, async (context) => {
   context.response.body = {

@@ -11,6 +11,7 @@ window.addEventListener("DOMContentLoaded", async (ev) => {
   ev.preventDefault();
 
   signFormListener();
+  recentPostListener();
   // Would need to place this on a interval to keep public view up-to-date
   // whenever members take actions
   service.getPublicPosts();
@@ -37,6 +38,7 @@ function signFormListener() {
         case 200:
           viewHandler.displayUsername(data.username);
           viewHandler.displayNewPostBtn();
+          viewHandler.addFavPostBtn();
           service.getPosts();
           break;
         case 401:
@@ -48,4 +50,9 @@ function signFormListener() {
           );
       }
     });
+}
+
+function recentPostListener() {
+  let recentBtn = document.querySelector(".recentBtn");
+  recentBtn.addEventListener("click", () => service.getPosts());
 }

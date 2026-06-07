@@ -83,6 +83,25 @@ viewHandler.displayNewPostBtn = () => {
   service.addPostFormBtnListener();
 };
 
+viewHandler.resetFilters = () => {
+  let favBtn = document.querySelector(".favPost");
+  favBtn.classList.remove("active");
+
+  let recentBtn = document.querySelector(".recentBtn");
+  recentBtn.classList.add("active");
+};
+
+viewHandler.addFavPostBtn = () => {
+  const tabs = document.querySelector("#tabs");
+  const btn = document.createElement("button");
+
+  btn.classList.add("favPost");
+  btn.textContent = "Favourites";
+  btn.onclick = () => service.favPostBtnListener();
+
+  tabs.append(btn);
+};
+
 viewHandler.showPosts = async (data) => {
   const posts = document.querySelector(".posts");
 
@@ -92,6 +111,7 @@ viewHandler.showPosts = async (data) => {
     .forEach((oldPost) => oldPost.remove());
 
   const sessionUser = await service.getSessionUser();
+
   // Build posts dynamically
   data.posts.forEach(async (el) => {
     const showDeleteBtn = el.owner_username === sessionUser;
@@ -138,7 +158,7 @@ viewHandler.showPosts = async (data) => {
                   "btn",
                   {
                     className: "delBtn",
-                    textContent: "delete",
+                    textContent: "Delete",
                     // Pass id as param rather than set as a key-* attribute, to prevent client tampering
                     onclick: () => service.deletePost(el.id),
                   },
@@ -211,7 +231,6 @@ function createElement(tag, props = {}, children = []) {
   children.forEach((child) => element.append(child));
   return element;
 }
-export { viewHandler };
 
 function parseDateTime(isoString) {
   let ms = Date.parse(isoString);
@@ -221,3 +240,5 @@ function parseDateTime(isoString) {
     time: d.toLocaleTimeString(),
   };
 }
+
+export { viewHandler };
