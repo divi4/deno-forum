@@ -1,11 +1,11 @@
 import { Client } from "jsr:@db/postgres";
+import { config } from "./config.js";
 
-// Need to place password in config file
 const database = new Client({
   user: "itech3108",
   database: "itech3108_30422201_a2",
   hostname: "localhost",
-  password: "itech3108pass",
+  password: config.dbPass,
   port: 7000,
 });
 
