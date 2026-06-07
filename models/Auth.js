@@ -1,7 +1,7 @@
 import { hash, verify } from "jsr:@felix/bcrypt";
-import { database } from "../models/database.js";
+import { database } from "./database.js";
 import * as djwt from "jsr:@zaubrik/djwt";
-import { config } from "../models/config.js";
+import { config } from "./config.js";
 
 let Auth = {};
 

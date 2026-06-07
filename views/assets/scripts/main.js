@@ -1,8 +1,3 @@
-// Use Oak for route handling and auth middleware
-// Create a client side user object
-// Verify this user
-// If verified then get user details
-// If not, add new user to db upon client confirmation, then reload page to force login
 import { service } from "/views/assets/scripts/service.js";
 import { viewHandler } from "/views/assets/scripts/viewHandler.js";
 
@@ -12,8 +7,9 @@ window.addEventListener("DOMContentLoaded", async (ev) => {
 
   signFormListener();
   recentPostListener();
-  // Would need to place this on a interval to keep public view up-to-date
-  // whenever members take actions
+  // Would need to make server push updates to this endpoint to keep the visitor view
+  // up-to-date with members actions
+  // Trigger getPublicPosts without viewHandler on member actions (upvote, create new post)?
   service.getPublicPosts();
 });
 

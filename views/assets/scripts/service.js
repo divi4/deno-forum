@@ -39,7 +39,6 @@ service.createUser = async (data) => {
       },
       body: JSON.stringify(data),
     });
-    // const responseData = await response.json();
     return responseData;
   } catch (error) {
     console.log(error);
@@ -61,7 +60,6 @@ service.postPost = async (data) => {
     });
 
     service.getPosts();
-    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;
@@ -116,7 +114,7 @@ service.getSessionUser = async () => {
     }
   } catch (ex) {
     console.log(
-      `There was an error verifying your JWT token when executing getSessionUser: ${ex.message}`,
+      `There was an error verifying your JWT token when executing getSessionUser: ${ex.message}, please reload page and empty your cache`,
     );
   }
 };
@@ -165,7 +163,6 @@ service.deletePost = async (id) => {
     });
 
     service.getPosts();
-    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;
@@ -184,7 +181,6 @@ service.hidePost = async (id) => {
     });
 
     service.getPosts();
-    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;
@@ -203,7 +199,6 @@ service.upvote = async (id) => {
     });
 
     service.updatePostPoints(id);
-    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;
@@ -222,7 +217,6 @@ service.downvote = async (id) => {
     });
 
     service.updatePostPoints(id);
-    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;
@@ -240,7 +234,6 @@ service.updatePostPoints = async (id) => {
       },
     });
 
-    // const responseData = await response.json();
     service.updateUserPoints(id);
   } catch (error) {
     console.log(error);
@@ -259,44 +252,7 @@ service.updateUserPoints = async (id) => {
       },
     });
 
-    // const responseData = await response.json();
     service.getPosts();
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-// Generic CRUD operations
-service.createData = async (endpoint, data) => {
-  try {
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    const responseData = await response.json();
-    console.log(responseData);
-    return responseData;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
-};
-
-service.postData = async (endpoint, data) => {
-  try {
-    await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-
-    // const responseData = await response.json();
   } catch (error) {
     console.log(error);
     return error;

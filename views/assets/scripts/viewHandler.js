@@ -48,7 +48,7 @@ viewHandler.showPostForm = () => {
 
     form.reset();
     document.querySelector(".posts").replaceChildren();
-    // postPost will call getPost for us, should reorganise
+    // postPost will call getPost for us, should reorganise code and rename to make this clear
     service.postPost(data);
   });
 
@@ -195,7 +195,7 @@ viewHandler.showPosts = async (data) => {
               "p",
               {
                 className: "postVotes",
-                textContent: `${el.post_rating || 1} pts`,
+                textContent: `${el.post_rating} pts`,
               },
               [],
             ),

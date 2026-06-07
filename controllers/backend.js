@@ -1,6 +1,7 @@
 import { Application, Router } from "jsr:@oak/oak";
-import { Auth } from "./Auth.js";
+import { Auth } from "../models/Auth.js";
 import { Post } from "../models/Post.js";
+import { User } from "../models/User.js";
 
 const app = new Application();
 const router = new Router();
@@ -9,6 +10,7 @@ router.post("/api/login", Auth.checkUser);
 router.post("/api/signup", Auth.addUser);
 
 router.get("/api/post/read/public", Post.publicRead);
+
 router.get("/api/post/read", Auth.checkToken, Post.memberRead);
 router.post("/api/post/create", Auth.checkToken, Post.create);
 router.delete("/api/post/delete/:id", Auth.checkToken, Post.delete);
@@ -16,8 +18,9 @@ router.post("/api/post/hide/:id", Auth.checkToken, Post.hide);
 router.post("/api/post/upvote/:id", Auth.checkToken, Post.upvote);
 router.post("/api/post/downvote/:id", Auth.checkToken, Post.downvote);
 router.post("/api/post/rating/:id", Auth.checkToken, Post.updatePostPoints);
-router.post("/api/user/rating/:id", Auth.checkToken, Post.updateAccountPoints);
-router.get("/api/user/favourites", Auth.checkToken, Post.getFavs);
+
+router.post("/api/user/rating/:id", Auth.checkToken, User.updateAccountPoints);
+router.get("/api/user/favourites", Auth.checkToken, User.getFavs);
 
 router.get("/api/whoami", Auth.checkToken, async (context) => {
   context.response.body = {
