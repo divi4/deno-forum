@@ -245,22 +245,38 @@ Post.upvote = async (context) => {
     const sessionUser = context.state.user;
     const postId = context.params.id;
 
-    let isExist = await database.queryObject`
-      SELECT FROM ratings
-      WHERE
-        rated_by_username=${sessionUser} AND
-        post_id=${postId} AND
-        is_like=FALSE
-        `;
+    let hasUpvoted = await database.queryObject`
+          SELECT FROM ratings
+          WHERE
+            rated_by_username=${sessionUser} AND
+            post_id=${postId} AND
+            is_like=TRUE
+          `;
 
-    if (isExist.rows.length) {
+    let hasDownvoted = await database.queryObject`
+                SELECT FROM ratings
+                WHERE
+                  rated_by_username=${sessionUser} AND
+                  post_id=${postId} AND
+                  is_like=FALSE
+                `;
+
+    if (hasDownvoted.rows.length) {
       await database.queryObject`
-           DELETE FROM ratings
-           WHERE
-             rated_by_username=${sessionUser} AND
-             post_id=${postId} AND
-             is_like=FALSE
-             `;
+                DELETE FROM ratings
+                WHERE
+                  rated_by_username=${sessionUser} AND
+                  post_id=${postId} AND
+                  is_like=FALSE
+                `;
+    } else if (hasUpvoted.rows.length) {
+      context.response.status = 403;
+      context.response.body = {
+        message:
+          "Error, user doesn't have permission to upvote a post more than once",
+      };
+
+      return;
     }
 
     let results = await database.queryObject`
@@ -305,7 +321,7 @@ Post.downvote = async (context) => {
     const sessionUser = context.state.user;
     const postId = context.params.id;
 
-    let isExist = await database.queryObject`
+    let hasUpvoted = await database.queryObject`
       SELECT FROM ratings
       WHERE
         rated_by_username=${sessionUser} AND
@@ -313,7 +329,15 @@ Post.downvote = async (context) => {
         is_like=TRUE
       `;
 
-    if (isExist.rows.length) {
+    let hasDownvoted = await database.queryObject`
+            SELECT FROM ratings
+            WHERE
+              rated_by_username=${sessionUser} AND
+              post_id=${postId} AND
+              is_like=FALSE
+            `;
+
+    if (hasUpvoted.rows.length) {
       await database.queryObject`
             DELETE FROM ratings
             WHERE
@@ -321,6 +345,14 @@ Post.downvote = async (context) => {
               post_id=${postId} AND
               is_like=TRUE
             `;
+    } else if (hasDownvoted.rows.length) {
+      context.response.status = 403;
+      context.response.body = {
+        message:
+          "Error, user doesn't have permission to downvote a post more than once",
+      };
+
+      return;
     }
 
     let results = await database.queryObject`

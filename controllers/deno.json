@@ -1,7 +1,0 @@
-{
-  "imports": {
-    "@db/postgres": "jsr:@db/postgres@^0.19.5",
-    "@oak/oak": "jsr:@oak/oak@^17.2.0",
-    "@stdext/crypto": "jsr:@stdext/crypto@^0.1.0"
-  }
-}

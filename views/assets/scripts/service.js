@@ -190,7 +190,7 @@ service.hidePost = async (id) => {
 service.upvote = async (id) => {
   const endpoint = `api/post/upvote/${id}`;
   try {
-    await fetch(endpoint, {
+    let response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -198,7 +198,9 @@ service.upvote = async (id) => {
       },
     });
 
-    service.updatePostPoints(id);
+    if (response.ok) {
+      service.updatePostPoints(id);
+    }
   } catch (error) {
     console.log(error);
     return error;
@@ -208,7 +210,7 @@ service.upvote = async (id) => {
 service.downvote = async (id) => {
   const endpoint = `api/post/downvote/${id}`;
   try {
-    await fetch(endpoint, {
+    let response = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -216,7 +218,9 @@ service.downvote = async (id) => {
       },
     });
 
-    service.updatePostPoints(id);
+    if (response.ok) {
+      service.updatePostPoints(id);
+    }
   } catch (error) {
     console.log(error);
     return error;
